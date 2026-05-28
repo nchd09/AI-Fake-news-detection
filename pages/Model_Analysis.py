@@ -1,51 +1,91 @@
 import streamlit as st
 import matplotlib.pyplot as plt
+import pandas as pd
+
+st.set_page_config(
+    page_title="Model Analysis",
+    page_icon="📊", 
+    layout="wide"
+)
 
 st.title("📊 Model Analysis")
 
-# Metrics
-accuracy = 97
-precision = 96
-recall = 98
-f1 = 97
+st.write("""
+Trang hiển thị:
+         - hiệu suất của mô hình
+         - phân bố dữ liệu
+         - so sánh các chỉ số đánh giá
+         - khả năng hoạt động của hệ thống
+""")
 
-# Top metrics
-c1, c2, c3, c4 = st.columns(4)
+st.markdown("---")
 
+st.subheader("📈 Model Performance")
+
+c1,c2,c3,c4 = st.columns(4)
 c1.metric("Accuracy", "97%")
 c2.metric("Precision", "96%")
 c3.metric("Recall", "98%")
-c4.metric("F1-score", "97%")
+c4.metric("F1-Score", "97%")
+
+st.info("""
+Ý nghĩa:
+- Accuracy: độ chính xác tổng thể
+- Precision: tỉ lệ dự đoán đúng trong số dự đoán là fake news
+- Recall: số bỏ sót tin giả trong tổng số tin giả thực tế
+- F1-Score: cân bằng giữa precision và recall
+""")
 
 st.markdown("---")
 
-# Bar chart
-
-labels = ["Accuracy", "Precision", "Recall", "F1-score"]
-values = [accuracy, precision, recall, f1]
-
-fig, ax = plt.subplots()
-
-ax.bar(labels, values)
-
+st.subheader("📊 Data Distribution")
+labels = ["Accuracy", "Precision", "Recall", "F1-Score"]
+values = [97, 96, 98, 97]
+fig, ax = plt.subplots(figsize=(8,5))
+bars = ax.bar(labels,values)
 ax.set_ylim(0, 100)
-
+ax.set_ylabel("Score (%)")
+ax.set_title("Model Performance Scores")
+for bar in bars:
+    height = bar.get_height()
+    ax.text(bar.get_x() + bar.get_width()/2.0,
+             height+1,
+                f'{height}%',
+                ha='center'
+            )
+    
 st.pyplot(fig)
 
+st.success("""
+           Biểu đồ thể hiện:
+           - Accuracy cao cho thấy mô hình tổng thể tốt
+           -Recall cao cho thấy mô hình ít bỏ sót tin giả
+           - Precision cao cho thấy mô hình ít dự đoán sai tin giả
+""")
+
 st.markdown("---")
 
-# Pie chart dataset
+st.subheader("📰 Phân bố dữ liệu dataset")
 
-labels = ["Fake", "Real"]
-sizes = [23481, 21417]
+fake_count = 23481
+real_count = 21417
 
-fig2, ax2 = plt.subplots()
-
+labels = ["Fake News", "Real News"]
+sizes = [fake_count, real_count]
+fig2, ax2 = plt.subplots(figsize=(6,6))
 ax2.pie(
     sizes,
     labels=labels,
-    autopct='%1.1f%%'
-)
+    autopct="%1.1f%%"
+    )
+
+ax2.set_title("Dataset Distribution")
 
 st.pyplot(fig2)
+
+st.info("""
+Biểu đồ tròn thể hiện: tỉ lệ dữ liệu fake news và real news trong dataset. Dataset khá cân bằng, giúp mô hình học tốt cả hai loại tin tức.
+""")
+
+st.markdown("---")
 
